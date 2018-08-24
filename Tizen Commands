@@ -1,0 +1,270 @@
+//tizen commands
+
+cat /etc/zypp/repos.d/slp-release.repo
+
+gbs build -A armvl7 -P gears2 -B ~/gbs_build/gears2 --include-all
+
+
+gbs build -A armv7l -P gears2 -B ~/gbs_build/gears2 --include-all  --no-patch-export
+
+
+gbs build -A armv7l -P galelio -B ~/gbs_build/galelio/patch-performance-elementary --include-all
+
+// 2.3 installation
+
+http://mosaic.sec.samsung.net/kms/comty.do?comtyId=493661&menuId=493680&postId=495667&page=view&type=LIST
+
+
+
+// ttrace with framework apis (ttrace hotspot) for linux. working for 4.0 platform as 3.0 reports are not proper
+
+1. make file list in tmp folder
+
+\touch /tmp/.ui_trace_ecore_enabled
+touch /tmp/.ui_trace_evas_enabled
+touch /tmp/.ui_trace_edje_enabled
+touch /tmp/.ui_trace_elementary_enabled
+touch /tmp/.ui_trace_efl_extension_enabled
+touch /tmp/.ui_trace_ui_extension_enabled
+touch /tmp/.ui_trace_ui_base_enabled
+touch /tmp/.ui_trace_ui_resource_share_enabled
+
+2.In device shell run following
+
+atrace-1.1 -e efl -e app  --async_start
+
+3. extract ttrace.zip in local ubunt PC.	
+
+4. sudo chmod u+x ttrace.py
+5. operate below command in host pc shell.
+./ttrace.py -b 20480 -t 10
+
+
+// ttrace with framework apis (ttrace hotspot) for windows
+
+go to C:\Users\suresh.ku1\Desktop\TraceViewer-v1.0.4-Windows folder and run below commands
+step 1)
+
+touch /tmp/.ui_trace_ecore_enabled
+touch /tmp/.ui_trace_evas_enabled
+touch /tmp/.ui_trace_edje_enabled
+touch /tmp/.ui_trace_elementary_enabled
+touch /tmp/.ui_trace_efl_extension_enabled
+touch /tmp/.ui_trace_ui_extension_enabled
+touch /tmp/.ui_trace_ui_base_enabled
+touch /tmp/.ui_trace_ui_resource_share_enabled
+
+step 2)
+
+run TraceViewer tool from the same dir.
+go to connection-> connect->start tool
+
+step 3)
+wait for five seconds->launch app->wait for 5 seconds-> stop tool
+
+step 4)
+go to c drvive->tttrace logs. type chrome://tracing/ in chrome and drop the ftrace file corresponding to log taken
+
+
+step 5) from the repot only consider slice section and take cpu wall time and ocurence in the final report
+
+
+// commands to fix chanbooting script not working in 3.0
+
+# verityctl disable
+#reboot
+#change-bootin~~
+
+
+
+// gear s2 repo
+
+http://10.252.240.207:8008/snapshots//orbis/SM-R730S_KS_SKC-VP2/stem/latest_successful/images/
+
+
+
+// java 7 installation
+https://stackoverflow.com/questions/16263556/installing-java-7-on-ubuntu
+
+
+// rpm install commands
+// if rpm -ih command not working
+pkgcmd -i -p /tmp/com.samsung.ui-widget-sample-1.0.18-1.armv7l.rpm -q
+
+pkgcmd -i -t tpk -p /tmp/eng_com.samsung.gearstore-3.0.1-arm.tpk
+
+after above command use rpm -ih command in 2.3
+
+
+// tpk installation
+tpk-backend -d com.samsung.clock --preload --force-remove
+tpk-backend -y /tmp/com.samsung.clock.tpk --preload
+
+
+// fix failed: Thread died in Berkeley DB library
+rm /var/lib/rpm/__db.00* && rm /var/lib/rpm/.rpm.lock 
+rm /var/lib/rpm/.rpm.lock 
+
+
+// commands to start and stop accessiblity
+vconftool set -f -t bool db/setting/accessibility/tts 0
+
+// install debug packages
+
+
+
+
+// make build elementary
+
+1) go to /home/suresh.ku1/gbs_build/solis_tizen4.0/local/BUILD-ROOTS/scratch.armv7l.0/home/abuild/rpmbuild/BUILD/elementary-1.16.0/src/lib/ and do make. make change in src folder files here or create a softlink in tizrn studio
+
+2) go to /home/suresh.ku1/gbs_build/solis_tizen4.0/local/BUILD-ROOTS/scratch.armv7l.0/home/abuild/rpmbuild/BUILD/elementary-1.16.0/src/lib/.libs
+then push sdb push libelementary.so* to tmp. go to device and mv /tmp/libelementary.so* to /usr/lib
+
+
+
+
+
+// valgrind in solis 4.0
+
+##############################
+rm -rf /usr/system/RestoreDir
+#####################################
+Install all debug, valgrind and perl rpms [Note: If valgrind and perl rpm is not exist for 4.0 take from 3.0]
+#######################################
+
+find /usr/lib/debug/ -print | xargs -n 1 chsmack -a"_"
+mkdir -p /opt/usr/home/owner/share/tmp/sdk_tools/valgrind/usr/bin 
+ln -s /usr/bin/valgrind /opt/usr/home/owner/share/tmp/sdk_tools/valgrind/usr/bin/valgrind
+##########################################
+echo "User::Pkg::com.samsung.w-contacts2 User::Shell rwxat" | smackload 
+echo "User System rwxat" | smackload
+echo "User::Pkg::com.samsung.w-contacts2 System rwxat" | smackload
+
+echo "User::Pkg::com.samsung.weather-widget User::Shell rwxat" | smackload 
+echo "User System rwxat" | smackload
+echo "User::Pkg::com.samsung.shealth.widget System rwxat" | smackload
+#######################################################
+launch_app com.samsung.wemail __AUL_SDK__ VALGRIND __DLP_VALGRIND_ARG__ --tool=massif,--threshold=0.005,--detailed-freq=1,--max-snapshots=50,--pages-as-heap=yes,--massif-out-file=/tmp/massif.out
+
+launch_app com.samsung.w-contacts2 __AUL_SDK__ VALGRIND __DLP_VALGRIND_ARG__ --error-limit=no,--leak-resolution=high,--show-reachable=no,--undef-value-errors=no,--track-origins=no,--tool=memcheck,--leak-check=full,--log-file=/tmp/valgrind.txt
+
+// Note wait for sometime to lauch the app on device
+
+
+
+//launch_app org.tizen.widget_viewer_sdk widget_id com.samsung.shealth.widget __AUL_SDK__ VALGRIND __DLP_VALGRIND_ARG__ --error-limit=no,--leak-resolution=high,--show-reachable=no,--undef-value-errors=no,--track-origins=no,--tool=memcheck,--leak-check=full,--log-file=/tmp/valgrind.txt
+#######################################################
+pkginfo --listapp|grep widget 
+aul_test term_pid {PID} 	
+#######################################################
+
+
+
+
+
+// command to install debug packages
+inst.sh http://10.252.240.232:8008/snapshots/solis_tizen4.0/SM-R765_KOR_SKC/daily/latest_successful/repos/slp-release/armv7l/ "*rpm" "*valgrind*.rpm" "*perl*.rpm" "*gallery*.rpm" "*galaxy*.rpm"
+
+
+
+inst.sh http://10.252.240.232:8008/snapshots/solis_tizen4.0/SM-R765_KOR_SKC/daily/latest_successful/repos/slp-release/armv7l/ "*rpm" "*valgrind*.rpm" "*perl*.rpm" "*gallery*.rpm" "*galaxy*.rpm" "*libcairo*.rpm"
+
+
+
+
+
+// free space in solis
+
+rm -rf  /usr/system/RestoreDir
+rm -rf /opt/var/log/*
+rm -rf /opt/var/lib/rpm/__db*
+rm -rf /opt/home/developer/sdk_tools/*
+
+
+//
+
+
+// ram usage commands
+
+1) memps -v then grep specific application
+
+2) use memps pid for detail result(details will include memory used by shared libraries
+
+//
+
+// git commands
+
+git push origin HEAD:refs/for/devel/uifw/master
+
+
+// core dump
+
+launchpad gdb path to coredump file
+
+or 
+
+gdb /usr/bin/launchpad-loader coredump file
+
+
+// core dump file location
+
+/opt/usr/share/crash/
+
+
+
+
+lrwxrwxrwx 1 root root 23 Mar 28 08:04 /usr/lib/libelementary.so.1 -> libelementary.so.1.16.0
+
+-rwxr-xr-x 1 root root 639920 Mar 27 07:43 /usr/lib/libedje.so.1.16.0
+
+
+//
+
+//
+/usr/lib/gcc/armv7l-tizen-linux-gnueabi/6.2.1/../../../../armv7l-tizen-linux-gnueabi/bin/ld: /usr/lib/gcc/armv7l-tizen-linux-gnueabi/6.2.1/liblto_plugin.so: error loading plugin: /usr/lib/gcc/armv7l-tizen-linux-gnueabi/6.2.1/liblto_plugin.so: wrong ELF class: ELFCLASS64
+fix for: configure:5789: error: C compiler cannot create executables error
+
+test@2030020305:~$ gbs chroot -r ~/GBS-ROOT-4-1/local/BUILD-ROOTS/scratch.armv7l.0/
+info: chroot /home/test/GBS-ROOT-4-1/local/BUILD-ROOTS/scratch.armv7l.0
+(tizen-build-env)@2030020305 /]# cd usr/l
+lib/     libexec/ local/   
+(tizen-build-env)@2030020305 /]# cd usr/lib/g
+games/    gcc/      gconv/    gcrt1.o   gettext/  gio/      glib-2.0/
+(tizen-build-env)@2030020305 /]# cd usr/lib/gc
+gcc/     gconv/   gcrt1.o  
+(tizen-build-env)@2030020305 /]# cd usr/lib/gcc/armv7l-tizen-linux-gnueabi/6.2.1/
+(tizen-build-env)@2030020305 6.2.1]# ls
+cc1         crtendS.o        libgcc_eh.a        liblto_plugin.so.0.0.0
+cc1plus      crtfastmath.o    libgcov.a        libsanitizer.spec
+collect2     include        libgfortran.spec    libstdc++fs.a
+crtbegin.o   include-fixed    libgomp.spec        lto-wrapper
+crtbeginS.o  libasan_preinit.o    libitm.spec        lto1
+crtbeginT.o  libcaf_single.a    liblto_plugin.so
+crtend.o     libgcc.a        liblto_plugin.so.0
+(tizen-build-env)@2030020305 6.2.1]# ls -l liblto_plugin.so*
+lrwxrwxrwx 1 root root    68 May 23 06:14 liblto_plugin.so -> /emul/usr/lib/gcc/armv7l-tizen-linux-gnueabi/6.2.1//liblto_plugin.so
+lrwxrwxrwx 1 root root    22 May 23 06:14 liblto_plugin.so.0 -> liblto_plugin.so.0.0.0
+-rwxr-xr-x 1 root root 43368 Jan 26 07:57 liblto_plugin.so.0.0.0
+(tizen-build-env)@2030020305 6.2.1]# rm liblto_plugin.so
+
+(tizen-build-env)@2030020305 6.2.1]# ln -s liblto_plugin.so.0 liblto_plugin.so  
+(tizen-build-env)@2030020305 6.2.1]# exit
+
+
+
+// to install edje compiler install libedje-bin package on ubuntu
+
+sudo apt-get install libedje-bin
+
+//
+
+
+
+Launching setup wizard via commandline:
+sh-3.2#vconftool set -t bool db/setup_wizard/first_boot 1 -f
+sh-3.2#vconftool set -t bool db/wms/gm_setupwizard_eula_finished 0 -f
+sh-3.2#launch_app com.samsung.b2-setup-wizard
+
+
+
